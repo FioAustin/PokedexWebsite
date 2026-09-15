@@ -13,3 +13,9 @@ Route::get('/pokemon/search/{name}', [CaughtPokemonController::class, 'searchPok
 Route::get('/collection', [CaughtPokemonController::class, 'index']);
 
 Route::post('/collection', [CaughtPokemonController::class, 'store']);
+
+Route::get('/collection/{id}', [CaughtPokemonController::class, 'show']);
+
+Route::put('/collection/{id}', [CaughtPokemonController::class, 'update']);
+
+Route::delete('/collection/{id}', [CaughtPokemonController::class, 'destroy']);

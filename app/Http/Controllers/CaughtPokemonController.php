@@ -8,9 +8,26 @@ use Illuminate\Support\Facades\Http;
 
 class CaughtPokemonController extends Controller
 {
-    public function index() 
+    public function index()
     {
         $pokemon = CaughtPokemon::all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $pokemon
+        ], 200);
+    }
+
+    public function show($id)
+    {
+        $pokemon = CaughtPokemon::find($id);
+
+        if (!$pokemon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pokemon tidak ditemukan di koleksi Anda.'
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,
@@ -36,6 +53,26 @@ class CaughtPokemonController extends Controller
         ], 201);
     }
 
+    public function update(Request $request, $id)
+    {
+        $pokemon = CaughtPokemon::find($id);
+
+        if (!$pokemon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pokemon tidak ditemukan di koleksi.'
+            ], 404);
+        }
+
+        $pokemon->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pokemon berhasil diperbarui!',
+            'data' => $pokemon
+        ], 200);
+    }
+
     public function searchPokedex($name)
     {
         $response = Http::get('https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
@@ -57,5 +94,24 @@ class CaughtPokemonController extends Controller
             'success' => false,
             'message' => 'Pokemon tidak ditemukan.'
         ], 404);
+    }
+
+    public function destroy($id)
+    {
+        $pokemon = CaughtPokemon::find($id);
+
+        if (!$pokemon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pokemon tidak ditemukan.'
+            ], 404);
+        }
+
+        $pokemon->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => $pokemon->name . ' berhasil dilepaskan dari koleksi!'
+        ], 200);
     }
 }
